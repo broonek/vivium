@@ -2,12 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 const Home = () => {
-  let navigate = useNavigate();
-  useEffect(() => {
-    navigate("/sign-in");
-  }, []);
-
-  return <div>home</div>;
+  return <div>home component</div>;
 };
 
 export default Home;

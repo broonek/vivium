@@ -15,6 +15,8 @@ import * as yup from "yup";
 import "../App.css";
 import Modal from "../components/Modal";
 import { schema } from "../assets/validationSchema/schema";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 interface IFormInput {
   email: string;
@@ -22,6 +24,11 @@ interface IFormInput {
 }
 
 const SignIn = () => {
+  const dispatch = useDispatch();
+  const setAuth = () => {
+    dispatch({ type: "setAuth" });
+  };
+  const navigate = useNavigate();
   const {
     reset,
     control,
@@ -30,11 +37,17 @@ const SignIn = () => {
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
   });
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
-    console.log(schema);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const timeout = setTimeout(() => {
+      fetch("http://localhost:8000/users")
+        .then((res) => res.json())
+        .then((data) => console.log(data));
 
-    reset();
+      setAuth();
+      reset();
+      navigate("/");
+      clearTimeout(timeout);
+    }, 2000);
   };
   const isSmallScreen = useMediaQuery((theme: any) =>
     theme.breakpoints.down("sm")
@@ -50,14 +63,12 @@ const SignIn = () => {
           show={true}
           severity="error"
           message={errors.email?.message || errors.password?.message}
-          isLoading={false}
         />
       ) : (
         <Modal
           show={false}
           severity="error"
           message={errors.email?.message || errors.password?.message}
-          isLoading={false}
         />
       )}
 
@@ -89,6 +100,7 @@ const SignIn = () => {
               }}
             ></Box>
             <Typography
+              variant="h3"
               sx={{
                 flexBasis: "100%",
                 fontSize: "1.4rem",
@@ -104,6 +116,7 @@ const SignIn = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    // variant="h3"
                     error={Boolean(errors.email)}
                     fullWidth
                     id="email"

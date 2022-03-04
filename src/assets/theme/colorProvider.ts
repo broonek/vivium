@@ -1,5 +1,6 @@
 import * as React from "react";
 import { createTheme } from "@mui/material/styles";
+import { breakpoints } from "@mui/system";
 
 const primaryColor = "#069FA6";
 

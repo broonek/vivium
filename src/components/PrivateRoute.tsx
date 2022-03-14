@@ -11,7 +11,6 @@ const PrivateRoute: React.FC<Props> = ({
   path = "/",
   isUserAuth,
 }) => {
-  console.log(isUserAuth);
   return isUserAuth ? <>{RouteComponent}</> : <Navigate to={path} />;
 };
 

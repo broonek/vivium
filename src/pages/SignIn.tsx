@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import pageLogo from "../assets/images/vivium-logo.png";
 import {
   Grid,
@@ -17,36 +17,98 @@ import Modal from "../components/Modal";
 import { schema } from "../assets/validationSchema/schema";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import checkSignInData from "../components/checkSignInData";
 
 interface IFormInput {
   email: string;
   password: string;
 }
+interface ISignIn {
+  isError: boolean;
+  message: string | undefined;
+}
 
 const SignIn = () => {
+  const [isError, setIsError] = useState<ISignIn>({
+    isError: false,
+    message: "",
+  });
+  const [isFormDisabled, setIsFormDisabled] = useState<boolean>(false);
+
   const dispatch = useDispatch();
-  const setAuth = () => {
-    dispatch({ type: "setAuth" });
-  };
   const navigate = useNavigate();
   const {
     reset,
     control,
     handleSubmit,
     formState: { errors },
+    clearErrors,
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
   });
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const timeout = setTimeout(() => {
+  useEffect(() => {
+    if (Object.keys(errors).length !== 0) {
+      setIsError((prevState) => ({
+        ...prevState,
+        message: errors.email?.message || errors.password?.message,
+        isError: true,
+      }));
+    } else {
+      return;
+    }
+  }, [errors]);
+  const setAuth = () => {
+    dispatch({ type: "setAuth" });
+  };
+  const clearAllErrors = () => {
+    clearErrors();
+    setIsError((prevState) => ({
+      ...prevState,
+      isError: false,
+    }));
+  };
+  const onSubmit: SubmitHandler<IFormInput> = (userInput) => {
+    setIsError((prevState) => ({
+      ...prevState,
+      isError: false,
+    }));
+    setIsFormDisabled(true);
+
+    //fake timeout to simulate fetch data
+    setTimeout(() => {
       fetch("http://localhost:8000/users")
         .then((res) => res.json())
-        .then((data) => console.log(data));
-
-      setAuth();
-      reset();
-      navigate("/");
-      clearTimeout(timeout);
+        .then((data) =>
+          checkSignInData({
+            email: data.email,
+            password: data.password,
+            userInputEmail: userInput.email,
+            userInputPassword: userInput.password,
+          })
+        )
+        .then((data) => {
+          if (data) {
+            setAuth();
+            reset();
+            navigate("/");
+          } else {
+            setIsFormDisabled(false);
+            setIsError({
+              isError: true,
+              message: "User not found",
+            });
+            return;
+          }
+        })
+        .catch((err) => {
+          setIsFormDisabled(false);
+          setIsError({
+            isError: true,
+            message: "Something went wrong",
+          });
+          return;
+        });
+      setIsFormDisabled(false);
     }, 2000);
   };
   const isSmallScreen = useMediaQuery((theme: any) =>
@@ -55,23 +117,19 @@ const SignIn = () => {
   const paperProps = isSmallScreen
     ? { variant: "elevation0" as "elevation" }
     : { variant: "outlined" as "outlined" };
-
+  const modalError = (
+    <Modal
+      show={isError.isError}
+      severity="error"
+      message={isError.message}
+      onClose={() => {
+        clearAllErrors();
+      }}
+    />
+  );
   return (
     <>
-      {errors.email?.message || errors.password?.message ? (
-        <Modal
-          show={true}
-          severity="error"
-          message={errors.email?.message || errors.password?.message}
-        />
-      ) : (
-        <Modal
-          show={false}
-          severity="error"
-          message={errors.email?.message || errors.password?.message}
-        />
-      )}
-
+      {modalError}
       <Grid
         height="100vh"
         container
@@ -117,6 +175,7 @@ const SignIn = () => {
                 render={({ field }) => (
                   <TextField
                     // variant="h3"
+                    disabled={isFormDisabled}
                     error={Boolean(errors.email)}
                     fullWidth
                     id="email"
@@ -136,8 +195,8 @@ const SignIn = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    disabled={isFormDisabled}
                     error={Boolean(errors.password)}
-                    // size="medium"
                     fullWidth
                     type="password"
                     id="password"
@@ -153,6 +212,7 @@ const SignIn = () => {
               />
 
               <Button
+                disabled={isFormDisabled}
                 type="submit"
                 sx={{
                   p: 0.7,

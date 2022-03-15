@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "./assets/theme/colorProvider";
+import { theme } from "./assets/theme/themeProvider";
 import { Provider } from "react-redux";
 import store from "./store";
 

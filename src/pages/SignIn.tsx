@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import pageLogo from "../assets/images/vivium-logo.png";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import {
   Grid,
   Paper,
@@ -9,15 +11,13 @@ import {
   Button,
   useMediaQuery,
 } from "@mui/material";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import "../App.css";
 import Modal from "../components/Modal";
-import { schema } from "../assets/validationSchema/schema";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import LoadingModal from "../components/LoadingModal";
 import checkSignInData from "../components/checkSignInData";
+import { schema } from "../assets/validationSchema/schema";
+import pageLogo from "../assets/images/vivium-logo.png";
 
 interface IFormInput {
   email: string;
@@ -34,6 +34,7 @@ const SignIn = () => {
     message: "",
   });
   const [isFormDisabled, setIsFormDisabled] = useState<boolean>(false);
+  const [isLoadingModalshow, setIsLoadingModalshow] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,6 +47,9 @@ const SignIn = () => {
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
   });
+  const isSmallScreen = useMediaQuery((theme: any) =>
+    theme.breakpoints.down("sm")
+  );
   useEffect(() => {
     if (Object.keys(errors).length !== 0) {
       setIsError((prevState) => ({
@@ -68,6 +72,7 @@ const SignIn = () => {
     }));
   };
   const onSubmit: SubmitHandler<IFormInput> = (userInput) => {
+    setIsLoadingModalshow(true);
     setIsError((prevState) => ({
       ...prevState,
       isError: false,
@@ -92,6 +97,7 @@ const SignIn = () => {
             reset();
             navigate("/");
           } else {
+            setIsLoadingModalshow(false);
             setIsFormDisabled(false);
             setIsError({
               isError: true,
@@ -100,7 +106,8 @@ const SignIn = () => {
             return;
           }
         })
-        .catch((err) => {
+        .catch(() => {
+          setIsLoadingModalshow(false);
           setIsFormDisabled(false);
           setIsError({
             isError: true,
@@ -109,14 +116,10 @@ const SignIn = () => {
           return;
         });
       setIsFormDisabled(false);
+      setIsLoadingModalshow(true);
     }, 2000);
   };
-  const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down("sm")
-  );
-  const paperProps = isSmallScreen
-    ? { variant: "elevation0" as "elevation" }
-    : { variant: "outlined" as "outlined" };
+
   const modalError = (
     <Modal
       show={isError.isError}
@@ -129,6 +132,7 @@ const SignIn = () => {
   );
   return (
     <>
+      <LoadingModal show={isLoadingModalshow} />
       {modalError}
       <Grid
         height="100vh"
@@ -138,7 +142,7 @@ const SignIn = () => {
       >
         <Grid item xs={12} sm={6} md={4} lg={3}>
           <Paper
-            {...paperProps}
+            elevation={isSmallScreen ? 0 : 1}
             sx={{
               display: "flex",
               justifyContent: "center",
@@ -174,7 +178,6 @@ const SignIn = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    // variant="h3"
                     disabled={isFormDisabled}
                     error={Boolean(errors.email)}
                     fullWidth

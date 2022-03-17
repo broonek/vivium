@@ -18,18 +18,10 @@ import LoadingModal from "../components/LoadingModal";
 import checkSignInData from "../components/checkSignInData";
 import { schema } from "../assets/validationSchema/schema";
 import pageLogo from "../assets/images/vivium-logo.png";
-
-interface IFormInput {
-  email: string;
-  password: string;
-}
-interface ISignIn {
-  isError: boolean;
-  message: string | undefined;
-}
+import { ISignInFormInput, IModalError } from "../utils/Interfaces";
 
 const SignIn = () => {
-  const [isError, setIsError] = useState<ISignIn>({
+  const [isError, setIsError] = useState<IModalError>({
     isError: false,
     message: "",
   });
@@ -44,7 +36,7 @@ const SignIn = () => {
     handleSubmit,
     formState: { errors },
     clearErrors,
-  } = useForm<IFormInput>({
+  } = useForm<ISignInFormInput>({
     resolver: yupResolver(schema),
   });
   const isSmallScreen = useMediaQuery((theme: any) =>
@@ -71,7 +63,7 @@ const SignIn = () => {
       isError: false,
     }));
   };
-  const onSubmit: SubmitHandler<IFormInput> = (userInput) => {
+  const onSubmit: SubmitHandler<ISignInFormInput> = (userInput) => {
     setIsLoadingModalshow(true);
     setIsError((prevState) => ({
       ...prevState,
@@ -117,7 +109,7 @@ const SignIn = () => {
         });
       setIsFormDisabled(false);
       setIsLoadingModalshow(true);
-    }, 2000);
+    }, 200);
   };
 
   const modalError = (

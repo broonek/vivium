@@ -1,8 +1,9 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import LoadingModal from "../components/LoadingModal";
 import { IModalError } from "../utils/Interfaces";
+import DataTable from "../components/DataTable";
+import { IDrivers } from "../utils/Interfaces";
 
 const Home = () => {
   const [driversData, setDriversData] = useState<{}[]>([]);
@@ -13,17 +14,19 @@ const Home = () => {
   });
 
   const filterDriversData = (drivers: {}[]) => {
-    const filteredDrivers = drivers.map((driver: any) => ({
-      position: driver.position,
-      constructorName: driver.Constructors[0].constructorId,
-      name: driver.Driver.givernName,
-      lastname: driver.Driver.familyName,
-      driverNumber: driver.Driver.permanentNumber,
-      points: driver.points,
-      wins: driver.wins,
-      dateOfBirth: driver.Driver.dateOfBirth,
-      nationality: driver.Driver.nationality,
-    }));
+    const filteredDrivers = drivers.map(
+      (driver: any): IDrivers => ({
+        id: ~~driver.position,
+        position: ~~driver.position,
+        constructorName: driver.Constructors[0].constructorId,
+        name: driver.Driver.givenName.concat(" ", driver.Driver.familyName),
+        driverNumber: ~~driver.Driver.permanentNumber,
+        points: ~~driver.points,
+        wins: ~~driver.wins,
+        dateOfBirth: new Date(driver.Driver.dateOfBirth),
+        nationality: driver.Driver.nationality,
+      })
+    );
     return filteredDrivers;
   };
 
@@ -44,6 +47,7 @@ const Home = () => {
           message: err.message || err,
         });
       });
+
     const driverStandings =
       f1Data?.MRData?.StandingsTable?.StandingsLists[0]?.DriverStandings;
     driverStandings
@@ -52,7 +56,6 @@ const Home = () => {
           isError: true,
           message: "Driver data is empty",
         });
-
     setIsLoadingModalShow(false);
   };
   useEffect(() => {
@@ -77,6 +80,7 @@ const Home = () => {
   );
   return (
     <>
+      <DataTable drivers={driversData} />
       <LoadingModal show={isLoadingModalShow} />
       {modalError}
     </>

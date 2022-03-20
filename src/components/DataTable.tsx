@@ -1,5 +1,9 @@
 import React from "react";
-import { GridRowSpacingParams, gridClasses } from "@mui/x-data-grid";
+import {
+  GridRowSpacingParams,
+  gridClasses,
+  GridValueFormatterParams,
+} from "@mui/x-data-grid";
 import { images } from "../utils/F1Teams";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
@@ -40,16 +44,15 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
     {
       field: "points",
       headerName: "Points",
-      minWidth: 80,
+      minWidth: 60,
       flex: 1,
       editable: true,
     },
     {
       field: "wins",
       headerName: "Wins",
-      minWidth: 80,
+      minWidth: 60,
       flex: 0.8,
-      editable: true,
     },
     {
       field: "dateOfBirth",
@@ -57,6 +60,9 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
       flex: 1.5,
       minWidth: 150,
       editable: true,
+      valueFormatter: (params: GridValueFormatterParams) => {
+        return new Date(params.value as string).toLocaleDateString();
+      },
     },
     {
       field: "nationality",
@@ -78,7 +84,7 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
         style={{
           margin: "0 auto",
           height: "100vh",
-          maxWidth: "1250px",
+          maxWidth: "1150px",
         }}
       >
         <DataGrid
@@ -119,6 +125,7 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
               borderBottom: "none",
               borderRight: "none",
               padding: "none",
+              paddingLeft: "5px",
             },
             [`& .${gridClasses.row}`]: {
               border: "none",

@@ -1,18 +1,10 @@
-import React from "react";
-
-interface userInputData {
-  email: string;
-  password: string;
-  userInputEmail: string;
-  userInputPassword: string;
-}
-
+import { ISignInValidation } from "../utils/Interfaces";
 const checkSignInData = ({
   email,
   password,
   userInputEmail,
   userInputPassword,
-}: userInputData) => {
+}: ISignInValidation) => {
   return email === userInputEmail.trim() && password === userInputPassword;
 };
 

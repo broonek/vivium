@@ -6,7 +6,10 @@ export interface IModalError {
   isError: boolean;
   message: string | undefined;
 }
-
+export interface ITeamsName {
+  id: string;
+  name: string;
+}
 export interface IDrivers {
   id: number;
   position: number;
@@ -17,4 +20,15 @@ export interface IDrivers {
   wins: number;
   dateOfBirth: Date;
   nationality: string;
+}
+
+export interface IfilteredDrivers {
+  DriverDataReducer: IDrivers[];
+}
+
+export interface ISignInValidation {
+  email: string;
+  password: string;
+  userInputEmail: string;
+  userInputPassword: string;
 }

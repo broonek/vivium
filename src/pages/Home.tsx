@@ -3,15 +3,25 @@ import Modal from "../components/Modal";
 import LoadingModal from "../components/LoadingModal";
 import { IModalError } from "../utils/Interfaces";
 import DataTable from "../components/DataTable";
-import { IDrivers } from "../utils/Interfaces";
+import { IDrivers, IfilteredDrivers } from "../utils/Interfaces";
+import FilterDriverData from "../components/FilterDriverData";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const [driversData, setDriversData] = useState<{}[]>([]);
+  const [driversData, setDriversData] = useState<IDrivers[]>([]);
   const [isLoadingModalShow, setIsLoadingModalShow] = useState<boolean>(false);
+  const [filteredDrivers, setfilteredDrivers] = useState<IDrivers[]>([]);
   const [isError, setIsError] = useState<IModalError>({
     isError: false,
     message: "",
   });
+
+  const isFiltered = useSelector(
+    (state: IfilteredDrivers) => state.DriverDataReducer
+  );
+  useEffect(() => {
+    setfilteredDrivers(isFiltered);
+  }, [isFiltered]);
 
   const filterDriversData = (drivers: {}[]) => {
     const filteredDrivers = drivers.map(
@@ -80,7 +90,8 @@ const Home = () => {
   );
   return (
     <>
-      <DataTable drivers={driversData} />
+      <FilterDriverData drivers={driversData} />
+      <DataTable drivers={filteredDrivers} />
       <LoadingModal show={isLoadingModalShow} />
       {modalError}
     </>

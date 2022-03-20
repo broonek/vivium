@@ -7,10 +7,11 @@ import PrivateRoute from "./components/PrivateRoute";
 import { useSelector } from "react-redux";
 function App() {
   interface isAuthState {
-    isAuth: boolean;
+    SignInReducer: { isAuth: boolean };
   }
-  const isAuth = useSelector((state: isAuthState) => state.isAuth);
-
+  const isAuth = useSelector(
+    (state: isAuthState) => state.SignInReducer.isAuth
+  );
   return (
     <div>
       <Routes>

@@ -1,23 +1,20 @@
-import React, {
-  ChangeEvent,
-  ChangeEventHandler,
-  useEffect,
-  useState,
-} from "react";
-
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterDateFns";
-import { Grid } from "@mui/material";
-import { TextField } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  Input,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Checkbox,
+  ListItemText,
+} from "@mui/material";
 import { IDrivers } from "../utils/Interfaces";
-import { Input } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemText from "@mui/material/ListItemText";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
 import { teamsName as constructors } from "../utils/F1Teams";
-import { useDispatch } from "react-redux";
 
 const FilterDriverData: React.FC<{ drivers: IDrivers[] }> = ({ drivers }) => {
   const ITEM_HEIGHT = 48;
@@ -103,6 +100,7 @@ const FilterDriverData: React.FC<{ drivers: IDrivers[] }> = ({ drivers }) => {
       >
         <Grid
           padding={"30px"}
+          pt={"40px"}
           container
           spacing={{ xs: 1, sm: 2, md: 4 }}
           maxWidth={"1150px"}
@@ -156,8 +154,8 @@ const FilterDriverData: React.FC<{ drivers: IDrivers[] }> = ({ drivers }) => {
             <Select
               variant="standard"
               fullWidth
-              labelId="dteams-checkbox"
-              id="demo-multiple-checkbox"
+              labelId="teams-checkbox"
+              id="teams-checkbox"
               multiple
               value={searchingTeamsName}
               onChange={handleTeamChange}

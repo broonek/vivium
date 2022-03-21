@@ -32,3 +32,13 @@ export interface ISignInValidation {
   userInputEmail: string;
   userInputPassword: string;
 }
+
+export interface IPrivateRoute {
+  children: React.ReactNode;
+  path?: string;
+  isUserAuth: Boolean;
+}
+
+export interface IShowModal {
+  show: boolean;
+}

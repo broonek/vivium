@@ -1,13 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { IShowModal } from "../utils/Interfaces";
 
-type Props = {
-  show: boolean;
-};
-
-const LoadingModal: React.FC<Props> = ({ show }) => {
+const LoadingModal: React.FC<IShowModal> = ({ show }) => {
   return ReactDOM.createPortal(
     <Backdrop sx={{ zIndex: "9999" }} open={show}>
       <CircularProgress />

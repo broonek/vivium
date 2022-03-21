@@ -1,5 +1,3 @@
-// import { createStore } from "redux";
-
 interface isAuth {
   isAuth: Boolean;
 }
@@ -24,6 +22,3 @@ const SignInReducer = (state = initialState, action: Action) => {
   }
 };
 export default SignInReducer;
-
-// const store = createStore(reducerFn);
-// export default store;

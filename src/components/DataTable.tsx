@@ -1,12 +1,14 @@
-import React from "react";
+import { useCallback, useState } from "react";
 import {
   GridRowSpacingParams,
   gridClasses,
   GridValueFormatterParams,
+  GridCallbackDetails,
 } from "@mui/x-data-grid";
 import { images } from "../utils/F1Teams";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
+  const [pageSize, setpageSize] = useState<number>(10);
   const columns: GridColDef[] = [
     {
       field: "name",
@@ -61,7 +63,7 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
       minWidth: 150,
       editable: true,
       valueFormatter: (params: GridValueFormatterParams) => {
-        return new Date(params.value as string).toLocaleDateString();
+        return new Date(params.value as string).toLocaleDateString("en-GB");
       },
     },
     {
@@ -72,7 +74,7 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
       editable: true,
     },
   ];
-  const getRowSpacing = React.useCallback((params: GridRowSpacingParams) => {
+  const getRowSpacing = useCallback((params: GridRowSpacingParams) => {
     return {
       top: params.isFirstVisible ? 0 : 7,
       bottom: params.isLastVisible ? 0 : 7,
@@ -83,7 +85,7 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
       <div
         style={{
           margin: "0 auto",
-          height: "100vh",
+          height: "80vh",
           maxWidth: "1150px",
         }}
       >
@@ -92,7 +94,11 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
           rows={drivers}
           rowHeight={60}
           columns={columns}
-          pageSize={10}
+          rowsPerPageOptions={[5, 10, 15, 20, 25]}
+          onPageSizeChange={(pageSize: number, details: GridCallbackDetails) =>
+            setpageSize(pageSize)
+          }
+          pageSize={pageSize}
           columnBuffer={0}
           columnThreshold={0}
           disableSelectionOnClick
@@ -111,7 +117,9 @@ const DataTable: React.FC<{ drivers: {}[] }> = ({ drivers }) => {
             [`& .${gridClasses.virtualScrollerRenderZone}`]: {
               marginTop: "10px",
             },
-
+            [`& .${gridClasses.columnHeader}`]: {
+              padding: "0 0 0 5px",
+            },
             [`& .${gridClasses.columnHeaders}`]: {
               margin: "0 10px 0 10px",
               alignSelf: "center",

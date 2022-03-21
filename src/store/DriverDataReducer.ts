@@ -10,7 +10,6 @@ interface GetDataAction {
 const initialState: IDrivers[] = [];
 type Action = SetDataAction | GetDataAction;
 const DriverDataReducer = (state = initialState, action: Action) => {
-  console.log(action);
   switch (action.type) {
     case "setFilteredData":
       return action.payload;

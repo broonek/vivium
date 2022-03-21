@@ -8,7 +8,6 @@ import {
   Typography,
   TextField,
   Box,
-  Button,
   useMediaQuery,
 } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,9 +15,11 @@ import "../App.css";
 import Modal from "../components/Modal";
 import LoadingModal from "../components/LoadingModal";
 import checkSignInData from "../components/checkSignInData";
+import CustomBtn from "../components/CustomBtn";
+import { ISignInFormInput, IModalError } from "../utils/Interfaces";
 import { schema } from "../assets/validationSchema/schema";
 import pageLogo from "../assets/images/vivium-logo.png";
-import { ISignInFormInput, IModalError } from "../utils/Interfaces";
+
 
 const SignIn = () => {
   const [isError, setIsError] = useState<IModalError>({
@@ -170,6 +171,7 @@ const SignIn = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
+                    autoComplete="email"
                     disabled={isFormDisabled}
                     error={Boolean(errors.email)}
                     fullWidth
@@ -206,7 +208,7 @@ const SignIn = () => {
                 )}
               />
 
-              <Button
+              <CustomBtn
                 disabled={isFormDisabled}
                 type="submit"
                 sx={{
@@ -219,7 +221,7 @@ const SignIn = () => {
                 variant="contained"
               >
                 Sign in
-              </Button>
+              </CustomBtn>
             </form>
           </Paper>
         </Grid>

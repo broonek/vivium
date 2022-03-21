@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Modal from "../components/Modal";
 import LoadingModal from "../components/LoadingModal";
-import { IModalError } from "../utils/Interfaces";
 import DataTable from "../components/DataTable";
-import { IDrivers, IfilteredDrivers } from "../utils/Interfaces";
 import FilterDriverData from "../components/FilterDriverData";
-import { useSelector } from "react-redux";
+import { IModalError, IDrivers, IfilteredDrivers } from "../utils/Interfaces";
+import { useDispatch } from "react-redux";
+import CustomBtn from "../components/CustomBtn";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const [driversData, setDriversData] = useState<IDrivers[]>([]);
   const [isLoadingModalShow, setIsLoadingModalShow] = useState<boolean>(false);
   const [filteredDrivers, setfilteredDrivers] = useState<IDrivers[]>([]);
@@ -23,6 +26,9 @@ const Home = () => {
     setfilteredDrivers(isFiltered);
   }, [isFiltered]);
 
+  const logoutUser = () => {
+    dispatch({ type: "setUnAuth" });
+  };
   const filterDriversData = (drivers: {}[]) => {
     const filteredDrivers = drivers.map(
       (driver: any): IDrivers => ({
@@ -90,6 +96,31 @@ const Home = () => {
   );
   return (
     <>
+      <CustomBtn
+        sx={{
+          p: 0,
+          pr: "8px",
+          m: 2,
+          lineHeight: 1.2,
+          position: "absolute",
+          right: 0,
+          width: 30,
+          height: 30,
+          minWidth: 30,
+          transition: ".3s width",
+          justifyContent: "flex-end",
+          "&:hover": {
+            cursor: "pointer",
+            width: 110,
+          },
+        }}
+        color="basic"
+        variant="contained"
+        endIcon={<LogoutIcon />}
+        onClick={() => logoutUser()}
+      >
+        Logout
+      </CustomBtn>
       <FilterDriverData drivers={driversData} />
       <DataTable drivers={filteredDrivers} />
       <LoadingModal show={isLoadingModalShow} />

@@ -1,12 +1,8 @@
-import React, { Children } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { IPrivateRoute } from "../utils/Interfaces";
 
-interface Props {
-  children: React.ReactNode;
-  path?: string;
-  isUserAuth: Boolean;
-}
-const PrivateRoute: React.FC<Props> = ({
+const PrivateRoute: React.FC<IPrivateRoute> = ({
   children: RouteComponent,
   path = "/",
   isUserAuth,
